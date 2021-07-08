@@ -1,0 +1,37 @@
+#cloud-config
+users:
+  - name: nutanix
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSkT3A1j89RT/540ghIMHXIVwNlAEM3WtmqVG7YN/wYwtsJ8iCszg4/lXQsfLFxYmEVe8L9atgtMGCi5QdYPl4X/c+5YxFfm88Yjfx+2xEgUdOr864eaI22yaNMQ0AlyilmK+PcSyxKP4dzkf6B5Nsw8lhfB5n9F5md6GHLLjOGuBbHYlesKJKnt2cMzzS90BdRk73qW6wJ+MCUWo+cyBFZVGOzrjJGEcHewOCbVs+IJWBFSi6w1enbKGc+RY9KrnzeDKWWqzYnNofiHGVFAuMxrmZOasqlTIKiC2UK3RmLxZicWiQmPn
+    lock-passwd: false
+    passwd: 3f1d144344b0a971a8aa4a45c58e85111581364733bf1ceb2599751b070eba4751f7039bd2f2c326e18a7706031f0b0d163ce19cfcf8a1af310035c4e0c9b29e
+
+hostname: nutanix
+
+packages:
+  - gcc-c++
+  - make
+  - unzip
+  - bash-completion
+  - python-pip
+  - s3cmd
+  - stress
+  - ntupdate
+  - nodejs
+  - python36
+  - python36-steuptools
+  - jq
+runcmd:
+  - npm install -g request express
+  - systemctl stop firewalld
+  - /sbin/setenforce 0
+  - sed -i -e 's/enforcing/disabled/g' /etc/selinux/config
+  - /bin/python3.6 -m ensurepip
+  - pip install -U pip
+  - pip install boto3 python-magic
+  - ntpdate -u -s 0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org
+  - systemctl restart ntpd
+
+final_message: CentOS 7 Tools Machine setup successfully!
+final_message: CentOS 7 Base Machine setup successfully!
